@@ -94,7 +94,7 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
             npy_path = os.path.join(DATA_PATH, action , str(sequence), str(frame_num))
             np.save(npy_path, keypoints)
 
-            
+                
             if cv2.waitKey(5) & 0xFF == 27:
                 break
 
