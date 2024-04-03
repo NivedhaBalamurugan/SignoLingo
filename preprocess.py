@@ -6,7 +6,7 @@ import data_aug
 
 
 actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'])
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','O','P','R','S','T','U','V','W','X','Y'])
 no_sequences=20
 sequence_length=30
 DATA_PATH = os.path.join('Dataset')
@@ -26,7 +26,7 @@ for action in actions_dig:
         for frame_num in range(sequence_length):
             res = np.load(os.path.join(DATA_PATH, action, str(sequence), "{}.npy".format(frame_num)))
             window.append(res)
-            rotatedpos_window, rotatedneg_window, flipped_window = data_aug.augment_landmarks(res)
+            rotatedpos_window, rotatedneg_window, flipped_window = data_aug.augment_landmarks(res, rotatedneg_window, rotatedpos_window, flipped_window)
         sequences.append(window)
         labels.append(label_map_dig[action])
         sequences.append(rotatedpos_window)
@@ -59,7 +59,7 @@ for action in actions_alpha:
         for frame_num in range(sequence_length):
             res = np.load(os.path.join(DATA_PATH, action, str(sequence), "{}.npy".format(frame_num)))
             window.append(res)
-            rotatedpos_window, rotatedneg_window, flipped_window = data_aug.augment_landmarks(res)
+            rotatedpos_window, rotatedneg_window, flipped_window = data_aug.augment_landmarks(res, rotatedneg_window, rotatedpos_window, flipped_window)
         sequences.append(window)
         labels.append(label_map_alpha[action])
         sequences.append(rotatedpos_window)

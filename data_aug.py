@@ -19,10 +19,7 @@ def flip_landmarks(landmarks):
     return flipped_landmarks.flatten()  
 
 
-def augment_landmarks(landmarks):
-    rotatedpos_window = []
-    rotatedneg_window = []
-    flipped_window = []
+def augment_landmarks(landmarks,rotatedneg_window, rotatedpos_window, flipped_window):
 
     rotated_landmarks1 = rotate_landmarks(landmarks, 30)
     rotatedpos_window.append(rotated_landmarks1)
