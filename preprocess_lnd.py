@@ -1,7 +1,9 @@
 import numpy as np
 import os
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
+
+
+from keras.utils import to_categorical 
 import data_aug
 
 
@@ -76,3 +78,9 @@ X_alpha = np.reshape(X_alpha, (X_alpha.shape[0] , X_alpha.shape[1], -1))
 y_alpha = np.array(labels)
 y_alpha = to_categorical(labels).astype(int)
 X_alpha_train, X_alpha_test, y_alpha_train, y_alpha_test = train_test_split(X_alpha, y_alpha, test_size=0.2)
+
+
+print(X_alpha_train.shape)
+print(X_alpha_test.shape)
+
+

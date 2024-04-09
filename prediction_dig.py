@@ -2,7 +2,17 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
-from model import *
+from keras.models import load_model
+
+
+actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
+
+
+try:
+    model_dig = load_model('model_dig.h5')
+    print(model_dig.summary())
+except Exception as e:
+    print("Error loading model:", e)
 
 
 mp_drawing = mp.solutions.drawing_utils
@@ -79,17 +89,20 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
         keypoints = extract_key_points(results)
         sequence.append(keypoints)
         sequence = sequence[-30:]
-
+        
         if len(sequence) == 30:
             res = model_dig.predict(np.expand_dims(sequence,axis=0))[0]
-            print(actions_dig[np.argmax(res)])
+            ans = actions_dig[np.argmax(res)]
+            cv2.putText(image,ans , (120,200), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255, 0), 4, cv2.LINE_AA)
         
-
 
         cv2.imshow('Sign Langauge',image)   
 
-        if cv2.waitKey(5) & 0xFF == 27:
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()                    
+
+

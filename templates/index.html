@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signolingo</title>
+</head>
+<body>
+
+    <video id="webcam" style="display: none;" autoplay></video> 
+    <button id="captureButton">Capture</button>
+    <button id="stop" style="display: none;">Stop</button> 
+    <div id="result" style="display: none;"></div>
+
+    <script>
+
+        let videoStream;
+        let intervalId;
+    
+        function initializeWebcam() {
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                const video = document.getElementById('webcam');
+                videoStream = stream;
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.getElementById('stop').style.display = 'inline';
+                document.getElementById('captureButton').style.display = 'none';
+            });
+
+        }
+    
+        function captureAndSendToFlask() {
+
+            const numFrames = 30;
+            const frames = [];
+    
+            function captureFrame() {
+                const video = document.getElementById('webcam');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/jpeg');
+                frames.push(imageData);
+            }
+    
+            for (let i = 0; i < numFrames; i++) {
+                captureFrame();
+            }
+    
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ frames: frames })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+            });
+
+        }
+    
+        document.getElementById('captureButton').addEventListener('click', () => {
+
+            document.getElementById('stop').style.display = 'inline';
+            document.getElementById('captureButton').style.display = 'none'
+            document.getElementById('result').innerText = ' ';
+            document.getElementById('result').style.display = 'inline';
+            initializeWebcam();
+    
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+    
+            intervalId = setInterval(() => {
+                captureAndSendToFlask();
+            }, 3000);
+
+        });
+    
+        document.getElementById('stop').addEventListener('click', () => {
+
+            clearInterval(intervalId);
+            if (videoStream) {
+                const videoTracks = videoStream.getVideoTracks();
+                videoTracks[0].stop();
+                document.getElementById('webcam').style.display = 'none';
+                document.getElementById('stop').style.display = 'none';
+                document.getElementById('captureButton').style.display = 'inline';
+                document.getElementById('result').style.display = 'none';
+            }
+
+        });
+
+    </script>
+    
+</body>
+</html>

@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
-from model import *
+from lstm_model import *
 
 
 mp_drawing = mp.solutions.drawing_utils
