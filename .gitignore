@@ -1,7 +1,8 @@
 ex.py
 installs.txt
-Logs_dig
+log_dig
 train
 smapl.py
 _pycache__
-model_dig.h5
+best_model_dig.h5
+best_model_alpha.h5

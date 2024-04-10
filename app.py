@@ -9,7 +9,7 @@ from keras.models import load_model
 app = Flask(__name__)
 
 try:
-    model_dig = load_model('model_dig.h5')
+    model_dig = load_model('best_model_dig.h5')
 except Exception as e:
     print("Error loading model:", e)
 
@@ -18,7 +18,7 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predictdig', methods=['POST'])
 def predict():
     data = request.json
     frames = data.get('frames', [])
