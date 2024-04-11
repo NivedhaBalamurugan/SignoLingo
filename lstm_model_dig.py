@@ -16,7 +16,7 @@ tb_callback_dig = TensorBoard(log_dir="log_dig/fit/"+ datetime.datetime.now().st
 
 early_stopping = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1)
 
-model_checkpoint = ModelCheckpoint('best_model_dig.h5', monitor='loss', mode='min', save_best_only=True, verbose=1)
+model_checkpoint = ModelCheckpoint('best_model_dig.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
 
 model_dig = Sequential()
 

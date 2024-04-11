@@ -53,11 +53,11 @@ def extract_key_points(results):
 
 
 
-DATA_PATH = os.path.join('Dataset') 
+DATA_PATH = os.path.join('Dataset')     
 no_sequences=20
 sequence_length=30
 
-action = 'A'
+action = 'S'
 
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:

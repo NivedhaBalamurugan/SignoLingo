@@ -7,7 +7,8 @@ from keras.utils import to_categorical
 import data_aug
 
 
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','O','P','R','S','T','U','V','W','X','Y'])
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L'])
+
 no_sequences=20
 sequence_length=30
 DATA_PATH = os.path.join('Dataset')

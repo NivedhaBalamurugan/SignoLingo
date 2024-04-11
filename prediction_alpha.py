@@ -5,11 +5,10 @@ import os
 from keras.models import load_model
 
 
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','O','P','R','S','T','U','V','W','X','Y'])
-
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S'])
 
 try:
-    model_alpha = load_model('alpha_model4')
+    model_alpha = load_model('m1.h5')
     print(model_alpha.summary())
 except Exception as e:
     print("Error loading model:", e)
