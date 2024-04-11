@@ -9,7 +9,7 @@ actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
 
 
 try:
-    model_dig = load_model('model_dig.h5')
+    model_dig = load_model('best_model_dig.h5')
     print(model_dig.summary())
 except Exception as e:
     print("Error loading model:", e)
