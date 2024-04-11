@@ -11,7 +11,7 @@ import datetime
 
 actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
 
-file_name='model1'
+
 tb_callback_dig = TensorBoard(log_dir="log_dig/fit/"+ datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
 early_stopping = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1)
