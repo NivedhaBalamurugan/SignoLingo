@@ -5,3 +5,4 @@ mediapipe
 numpy
 opencv-python
 scikit-learn
+tensorflow
