@@ -8,7 +8,8 @@
 <body>
 
     <video id="webcam" style="display: none;" autoplay></video> 
-    <button id="captureButton">Capture</button>
+    <button id="captureButtondig">Capture</button>
+    <button id="captureButtonalpha">Capture</button>
     <button id="stop" style="display: none;">Stop</button> 
     <div id="result" style="display: none;"></div>
 
@@ -31,7 +32,7 @@
 
         }
     
-        function captureAndSendToFlask() {
+        function captureAndSendToFlask(type) {
 
             const numFrames = 30;
             const frames = [];
@@ -51,24 +52,66 @@
                 captureFrame();
             }
     
-            fetch('/predictdig', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ frames: frames })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
-            });
+            if(type === 'dig'){
+
+                fetch('/predictdig', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ frames: frames })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+                });
+
+            }
+            
+            else{
+
+                fetch('/predictalpha', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ frames: frames })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+                });
+
+            }
+
+
 
         }
     
-        document.getElementById('captureButton').addEventListener('click', () => {
+        document.getElementById('captureButtondig').addEventListener('click', () => {
 
             document.getElementById('stop').style.display = 'inline';
-            document.getElementById('captureButton').style.display = 'none'
+            document.getElementById('result').innerText = ' ';
+            document.getElementById('captureButtondig').style.display = 'none'
+            document.getElementById('captureButtonalpha').style.display = 'none'
+            document.getElementById('result').style.display = 'inline';
+            initializeWebcam();
+    
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+    
+            intervalId = setInterval(() => {
+                captureAndSendToFlask('dig');
+            }, 3000);
+
+        });
+    
+        document.getElementById('captureButtonalpha').addEventListener('click', () => {
+
+            document.getElementById('stop').style.display = 'inline';
+            document.getElementById('captureButtondig').style.display = 'none'
+            document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').innerText = ' ';
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
@@ -78,7 +121,7 @@
             }
     
             intervalId = setInterval(() => {
-                captureAndSendToFlask();
+                captureAndSendToFlask('alpha');
             }, 3000);
 
         });
@@ -91,8 +134,9 @@
                 videoTracks[0].stop();
                 document.getElementById('webcam').style.display = 'none';
                 document.getElementById('stop').style.display = 'none';
-                document.getElementById('captureButton').style.display = 'inline';
                 document.getElementById('result').style.display = 'none';
+                document.getElementById('captureButtondig').style.display = 'inline';
+                document.getElementById('captureButtonalpha').style.display = 'inline';
             }
 
         });
