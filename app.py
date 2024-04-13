@@ -86,6 +86,7 @@ def predictdig():
             image, results = mp_detection(frame,hands)
 
             if not results.multi_hand_landmarks:
+                print("answer - no")
                 return jsonify({'prediction' : ' '})
           
             keypoints = extract_key_points(results)
@@ -118,6 +119,7 @@ def predictalpha():
             image, results = mp_detection(frame,hands)
 
             if not results.multi_hand_landmarks:
+                print("answer - no")
                 return jsonify({'prediction' : ' '})
             
             keypoints = extract_key_points(results)
