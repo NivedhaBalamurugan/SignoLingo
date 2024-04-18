@@ -68,7 +68,6 @@ DATA_PATH = os.path.join('Dataset')
 
 sequence = []
 
-
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
 
@@ -104,5 +103,4 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
 
     cap.release()
     cv2.destroyAllWindows()                    
-
 

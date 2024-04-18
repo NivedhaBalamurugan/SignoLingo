@@ -1,6 +1,15 @@
 import numpy as np
 
 
+
+def translate_landmarks(landmarks, tx, ty):
+    landmarks = landmarks.reshape((-1, 3))
+    translated_landmarks = np.copy(landmarks)
+    translated_landmarks[:, 0] += tx  
+    translated_landmarks[:, 1] += ty  
+    return translated_landmarks.flatten()
+
+
 def rotate_landmarks(landmarks, angle):
     landmarks = landmarks.reshape((-1, 3))
     angle_rad = np.radians(angle)
@@ -19,7 +28,7 @@ def flip_landmarks(landmarks):
     return flipped_landmarks.flatten()  
 
 
-def augment_landmarks(landmarks,rotatedneg_window, rotatedpos_window, flipped_window):
+def augment_landmarks(landmarks,rotatedneg_window, rotatedpos_window, flipped_window,flipped_rotpos_window,flipped_rotneg_window,translated_window):
 
     rotated_landmarks1 = rotate_landmarks(landmarks, 30)
     rotatedpos_window.append(rotated_landmarks1)
@@ -30,4 +39,16 @@ def augment_landmarks(landmarks,rotatedneg_window, rotatedpos_window, flipped_wi
     flipped_landmarks = flip_landmarks(landmarks)
     flipped_window.append(flipped_landmarks)
 
-    return rotatedpos_window, rotatedneg_window, flipped_window
+    flipped_rotpos_landmarks = flip_landmarks(rotated_landmarks1)
+    flipped_rotpos_window.append(flipped_rotpos_landmarks)
+   
+    flipped_rotneg_landmarks = flip_landmarks(rotated_landmarks2)
+    flipped_rotneg_window.append(flipped_rotneg_landmarks)
+
+
+    translated_landmarks1 = translate_landmarks(landmarks, 1, 1)  
+    translated_window.append(translated_landmarks1)
+
+
+
+    return rotatedpos_window, rotatedneg_window, flipped_window,flipped_rotpos_window,flipped_rotneg_window, translated_window

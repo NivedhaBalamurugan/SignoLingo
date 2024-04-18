@@ -53,7 +53,7 @@ def extract_key_points(results):
 app = Flask(__name__)
 
 try:
-    model_dig = load_model('best_model_dig.h5')
+    model_dig = load_model('best_model_dig_with_trans.h5')
     model_alpha = load_model('best_model_alpha.h5')
 except Exception as e:
     print("Error loading model:", e)
@@ -76,29 +76,48 @@ def predictdig():
     
     with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
         
-
         sequence = []  
-        
-        for frame_data in frames:
-          
-            frame = decode_base64_image(frame_data)
-          
-            image, results = mp_detection(frame,hands)
+        rt=0
+        lt=0
 
+        for frame_data in frames:
+            
+            frame = decode_base64_image(frame_data)
+            image, results = mp_detection(frame,hands)
             if not results.multi_hand_landmarks:
                 print("answer - no")
                 return jsonify({'prediction' : ' '})
-          
             keypoints = extract_key_points(results)
-            sequence.append(keypoints)
+            for idx, hand_handedness in enumerate(results.multi_handedness):
+                handtype=hand_handedness.classification[0].label
+                print(handtype)
+                if(handtype  == 'Left'):
+                    lt=lt+1
+                else:
+                    rt=rt+1 
+            sequence.append(keypoints)  
+
+        
+        if(rt == 30):
+            sequence.clear()
+            for frame_data in frames:
             
+                frame = decode_base64_image(frame_data)
+                frame = cv2.flip(frame,1)
+                image, results = mp_detection(frame,hands)
+                if not results.multi_hand_landmarks:
+                    print("answer - no")
+                    return jsonify({'prediction' : ' '})
+                keypoints = extract_key_points(results)
+                sequence.append(keypoints)  
+
 
         res = model_dig.predict(np.expand_dims(sequence, axis=0))[0]
         ans = actions_dig[np.argmax(res)]
 
     print("answer" , ans)
-    
-    return jsonify({'prediction': ans})
+    return jsonify({'prediction': ans})       
+
 
 
 
@@ -107,33 +126,54 @@ def predictalpha():
     data = request.json
     frames = data.get('frames', [])
 
-    with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
     
-
-        sequence = []  
+    with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
         
+        sequence = []  
+        rt=0
+        lt=0
+
         for frame_data in frames:
             
             frame = decode_base64_image(frame_data)
-            
             image, results = mp_detection(frame,hands)
-
             if not results.multi_hand_landmarks:
                 print("answer - no")
                 return jsonify({'prediction' : ' '})
-            
             keypoints = extract_key_points(results)
-            sequence.append(keypoints)
+            for idx, hand_handedness in enumerate(results.multi_handedness):
+                handtype=hand_handedness.classification[0].label
+                print(handtype)
+                if(handtype  == 'Left'):
+                    lt=lt+1
+                else:
+                    rt=rt+1 
+            sequence.append(keypoints)  
+
+        
+        if(rt == 30):
+            sequence.clear()
+            for frame_data in frames:
             
+                frame = decode_base64_image(frame_data)
+                frame = cv2.flip(frame,1)
+                image, results = mp_detection(frame,hands)
+                if not results.multi_hand_landmarks:
+                    print("answer - no")
+                    return jsonify({'prediction' : ' '})
+                keypoints = extract_key_points(results)
+                sequence.append(keypoints)  
+
 
         res = model_alpha.predict(np.expand_dims(sequence, axis=0))[0]
         ans = actions_alpha[np.argmax(res)]
 
     print("answer" , ans)
-
-    return jsonify({'prediction': ans})    
+    return jsonify({'prediction': ans})       
+  
 
 
 
 if __name__ == '__main__':
     app.run(debug=True )
+
