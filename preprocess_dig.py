@@ -8,7 +8,7 @@ import data_aug
 
 
 
-actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
+actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0','10'])
 
 
 no_sequences=20

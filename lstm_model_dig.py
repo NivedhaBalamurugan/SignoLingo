@@ -9,14 +9,14 @@ from sklearn.metrics import accuracy_score
 from keras.models import load_model
 import datetime
 
-actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0'])
+actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0','10'])
 
 
 tb_callback_dig = TensorBoard(log_dir="log_dig/fit/"+ datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
 early_stopping = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1)
 
-model_checkpoint = ModelCheckpoint('best_model_dig.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
+model_checkpoint = ModelCheckpoint('best_model_dig_with10.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
 
 model_dig = Sequential()
 
@@ -33,7 +33,7 @@ model_dig.fit(X_dig_train, y_dig_train, validation_split=0.2, epochs=200, callba
 model_dig.summary()
 
 
-best_model_dig = load_model('best_model_dig.h5')
+best_model_dig = load_model('best_model_dig_with10.h5')
 
 
 yhat_dig = best_model_dig.predict(X_dig_test)
