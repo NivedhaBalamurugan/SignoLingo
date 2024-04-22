@@ -7,7 +7,7 @@ from keras.models import load_model
 
 
 actions_dig = np.array(['1','2','3','4','5','6','7','8','9','0','10'])
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y'])
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'])
 
 
 
@@ -54,7 +54,7 @@ app = Flask(__name__)
 
 try:
     model_dig = load_model('best_model_dig_with10.h5')
-    model_alpha = load_model('best_model_alpha.h5')
+    model_alpha = load_model('best_model_alpha_withjz.h5')
 except Exception as e:
     print("Error loading model:", e)
 
@@ -142,7 +142,6 @@ def predictalpha():
             keypoints = extract_key_points(results)
             for idx, hand_handedness in enumerate(results.multi_handedness):
                 handtype=hand_handedness.classification[0].label
-                print(handtype)
                 if(handtype  == 'Left'):
                     lt=lt+1
                 else:

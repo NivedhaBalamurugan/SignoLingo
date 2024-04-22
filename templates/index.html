@@ -47,7 +47,8 @@
                 const imageData = canvas.toDataURL('image/jpeg');
                 frames.push(imageData);
             }
-    
+
+
             for (let i = 0; i < numFrames; i++) {
                 captureFrame();
             }
@@ -84,8 +85,30 @@
 
             }
 
+        }
 
 
+        let count = 0;
+
+        function intervalCallback(type) {
+            // Display "Start" for 5 seconds
+            document.getElementById('result').innerText = 'Start';
+            setTimeout(() => {
+                document.getElementById('result').innerText = 'Start';
+            }, 5000);
+
+            // Call captureAndSendToFlask after displaying "Start" for 5 seconds, and only 3 times
+            if (count < 3) {
+                captureAndSendToFlask(type);
+                count++;
+            } else {
+                clearInterval(intervalId);
+                // Reset count and start the interval again
+                count = 0;
+                intervalId = setInterval(() => {
+                    intervalCallback(type);
+                }, 2000);                   
+            }
         }
     
         document.getElementById('captureButtondig').addEventListener('click', () => {
@@ -96,14 +119,14 @@
             document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
-    
+               
             if (intervalId) {
                 clearInterval(intervalId);
             }
-    
+
             intervalId = setInterval(() => {
-                captureAndSendToFlask('dig');
-            }, 1000);
+                intervalCallback('dig');
+            }, 2000);       
 
         });
     
@@ -119,10 +142,10 @@
             if (intervalId) {
                 clearInterval(intervalId);
             }
-    
+
             intervalId = setInterval(() => {
-                captureAndSendToFlask('alpha');
-            }, 1000);
+                intervalCallback('alpha');
+            }, 2000);
 
         });
     

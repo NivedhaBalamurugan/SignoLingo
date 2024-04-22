@@ -11,14 +11,14 @@ from keras.regularizers import l2
 import datetime
 
 
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y'])
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'])
 
 
 tb_callback_alpha = TensorBoard(log_dir="log_alpha/fit/"+ datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
 early_stopping = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1)
 
-model_checkpoint = ModelCheckpoint('best_model_alpha.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
+model_checkpoint = ModelCheckpoint('best_model_alpha_withjz.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
 
 
 model_alpha = Sequential()
@@ -35,7 +35,7 @@ model_alpha.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=[
 model_alpha.fit(X_alpha_train, y_alpha_train,  validation_split=0.2, epochs=200, callbacks=[tb_callback_alpha, early_stopping, model_checkpoint])
 model_alpha.summary()
 
-best_model_alpha = load_model('best_model_alpha.h5')
+best_model_alpha = load_model('best_model_alpha_withjz.h5')
 
 
 yhat_alpha = best_model_alpha.predict(X_alpha_test)

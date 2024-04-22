@@ -5,7 +5,8 @@ import os
 from keras.models import load_model
 
 
-actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y'])
+actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'])
+
 
 try:
     model_alpha = load_model('best_model_alpha.h5')
@@ -67,7 +68,6 @@ DATA_PATH = os.path.join('Dataset')
 
 sequence = []
 
-
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
 
@@ -103,5 +103,4 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
 
     cap.release()
     cv2.destroyAllWindows()                    
-
 

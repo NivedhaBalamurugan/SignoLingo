@@ -57,7 +57,7 @@ DATA_PATH = os.path.join('Dataset')
 no_sequences=20
 sequence_length=30
 
-action = '10'
+action = 'Z'
 
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
@@ -95,7 +95,7 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
             np.save(npy_path, keypoints)
 
                 
-            if cv2.waitKey(5) & 0xFF == 27:
+            if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
 
     cap.release()
