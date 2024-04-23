@@ -27,13 +27,11 @@ for action in actions_dig:
         rotatedpos_window = []
         rotatedneg_window = []
         flipped_window = []
-        flipped_rotpos_window = []
-        flipped_rotneg_window = []
         translated_window = []
         for frame_num in range(sequence_length):
             res = np.load(os.path.join(DATA_PATH, action, str(sequence), "{}.npy".format(frame_num)))
             window.append(res)
-            rotatedpos_window, rotatedneg_window, flipped_window, flipped_rotpos_window,flipped_rotneg_window,translated_window = data_aug.augment_landmarks(res, rotatedneg_window, rotatedpos_window, flipped_window,flipped_rotpos_window,flipped_rotneg_window,translated_window)
+            rotatedpos_window, rotatedneg_window, flipped_window,translated_window = data_aug.augment_landmarks(res, rotatedneg_window, rotatedpos_window, flipped_window,translated_window)
         sequences.append(window)
         labels.append(label_map_dig[action])
         sequences.append(rotatedpos_window)
@@ -42,10 +40,6 @@ for action in actions_dig:
         labels.append(label_map_dig[action])
         sequences.append(flipped_window)
         labels.append(label_map_dig[action])
-      #  sequences.append(flipped_rotpos_window)
-       # labels.append(label_map_dig[action])
-       # sequences.append(flipped_rotneg_window)
-       # labels.append(label_map_dig[action])
         sequences.append(translated_window)
         labels.append(label_map_dig[action])  
 

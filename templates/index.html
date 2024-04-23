@@ -6,20 +6,16 @@
     <title>Signolingo</title>
 </head>
 <body>
-
     <video id="webcam" style="display: none;" autoplay></video> 
     <button id="captureButtondig">Capture</button>
     <button id="captureButtonalpha">Capture</button>
     <button id="stop" style="display: none;">Stop</button> 
     <div id="result" style="display: none;"></div>
-
     <script>
-
         let videoStream;
         let intervalId;
     
         function initializeWebcam() {
-
             navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
                 const video = document.getElementById('webcam');
@@ -27,13 +23,13 @@
                 video.srcObject = stream;
                 video.style.display = 'block';
                 document.getElementById('stop').style.display = 'inline';
+                document.getElementById('captureButton').style.display = 'none';
                 document.getElementById('captureButtondig').style.display = 'none';
             });
 
         }
     
         function captureAndSendToFlask(type) {
-
             const numFrames = 30;
             const frames = [];
     
@@ -47,14 +43,12 @@
                 const imageData = canvas.toDataURL('image/jpeg');
                 frames.push(imageData);
             }
-
-
+    
             for (let i = 0; i < numFrames; i++) {
                 captureFrame();
             }
     
             if(type === 'dig'){
-
                 fetch('/predictdig', {
                     method: 'POST',
                     headers: {
@@ -66,11 +60,9 @@
                 .then(data => {
                     document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
                 });
-
             }
             
             else{
-
                 fetch('/predictalpha', {
                     method: 'POST',
                     headers: {
@@ -82,75 +74,74 @@
                 .then(data => {
                     document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
                 });
-
-            }
-
-        }
-
-
-        let count = 0;
-
-        function intervalCallback(type) {
-            // Display "Start" for 5 seconds
-            document.getElementById('result').innerText = 'Start';
-            setTimeout(() => {
-                document.getElementById('result').innerText = 'Start';
-            }, 5000);
-
-            // Call captureAndSendToFlask after displaying "Start" for 5 seconds, and only 3 times
-            if (count < 3) {
-                captureAndSendToFlask(type);
-                count++;
-            } else {
-                clearInterval(intervalId);
-                // Reset count and start the interval again
-                count = 0;
-                intervalId = setInterval(() => {
-                    intervalCallback(type);
-                }, 2000);                   
             }
         }
     
         document.getElementById('captureButtondig').addEventListener('click', () => {
-
             document.getElementById('stop').style.display = 'inline';
             document.getElementById('result').innerText = ' ';
             document.getElementById('captureButtondig').style.display = 'none'
             document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
-               
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
 
-            intervalId = setInterval(() => {
-                intervalCallback('dig');
-            }, 2000);       
+            const video = document.getElementById('webcam');
+            document.getElementById('result').innerText = 'Start';
+
+            video.pause();
+
+            let count = 5; 
+
+            const countdownInterval = setInterval(() => {
+                if (count > 0) {
+                    document.getElementById('result').innerText = count.toString();
+                    count--;
+                } else {
+                    clearInterval(countdownInterval);
+                    video.play();
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                    }
+                    intervalId = setInterval(() => {
+                        captureAndSendToFlask('dig');
+                    }, 3000);
+                }
+            }, 1000); 
 
         });
+
     
         document.getElementById('captureButtonalpha').addEventListener('click', () => {
-
             document.getElementById('stop').style.display = 'inline';
             document.getElementById('captureButtondig').style.display = 'none'
             document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').innerText = ' ';
             document.getElementById('result').style.display = 'inline';
-            initializeWebcam();
-    
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
+            const video = document.getElementById('webcam');
+            document.getElementById('result').innerText = 'Start';
 
-            intervalId = setInterval(() => {
-                intervalCallback('alpha');
-            }, 2000);
+            video.pause();
 
+            let count = 5; 
+
+            const countdownInterval = setInterval(() => {
+                if (count > 0) {
+                    document.getElementById('result').innerText = count.toString();
+                    count--;
+                } else {
+                    clearInterval(countdownInterval);
+                    video.play();
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                    }
+                    intervalId = setInterval(() => {
+                        captureAndSendToFlask('alpha');
+                    }, 3000);
+                }
+            }, 1000); 
         });
     
         document.getElementById('stop').addEventListener('click', () => {
-
             clearInterval(intervalId);
             if (videoStream) {
                 const videoTracks = videoStream.getVideoTracks();
@@ -161,10 +152,13 @@
                 document.getElementById('captureButtondig').style.display = 'inline';
                 document.getElementById('captureButtonalpha').style.display = 'inline';
             }
-
         });
-
     </script>
     
 </body>
 </html>
+
+
+
+
+
