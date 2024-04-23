@@ -9,7 +9,7 @@ actions_alpha = np.array(['A','B','C','D','E','F','G','H','I','J','K','L','M','N
 
 
 try:
-    model_alpha = load_model('best_model_alpha.h5')
+    model_alpha = load_model('best_model_alpha_withjz.h5')
     print(model_alpha.summary())
 except Exception as e:
     print("Error loading model:", e)
