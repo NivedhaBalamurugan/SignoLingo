@@ -117,6 +117,8 @@
             document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').innerText = ' ';
             document.getElementById('result').style.display = 'inline';
+            initializeWebcam();
+            
             const video = document.getElementById('webcam');
             document.getElementById('result').innerText = 'Start';
 
