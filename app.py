@@ -137,19 +137,20 @@ def predictalpha():
             frame = decode_base64_image(frame_data)
             image, results = mp_detection(frame,hands)
             if not results.multi_hand_landmarks:
-                print("answer - no")
+       #         print("answer - no")
                 return jsonify({'prediction' : ' '})
             keypoints = extract_key_points(results)
             for idx, hand_handedness in enumerate(results.multi_handedness):
                 handtype=hand_handedness.classification[0].label
                 if(handtype  == 'Left'):
                     lt=lt+1
-                else:
-                    rt=rt+1 
+                    break
+            if (lt == 1):
+                break
             sequence.append(keypoints)  
 
         
-        if(rt == 30):
+        if(lt == 1):
             sequence.clear()
             for frame_data in frames:
             
@@ -157,7 +158,7 @@ def predictalpha():
                 frame = cv2.flip(frame,1)
                 image, results = mp_detection(frame,hands)
                 if not results.multi_hand_landmarks:
-                    print("answer - no")
+          #          print("answer - no")
                     return jsonify({'prediction' : ' '})
                 keypoints = extract_key_points(results)
                 sequence.append(keypoints)  
@@ -166,7 +167,7 @@ def predictalpha():
         res = model_alpha.predict(np.expand_dims(sequence, axis=0))[0]
         ans = actions_alpha[np.argmax(res)]
 
-    print("answer" , ans)
+   # print("answer" , ans)
     return jsonify({'prediction': ans})       
   
 

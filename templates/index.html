@@ -14,6 +14,9 @@
     <script>
         let videoStream;
         let intervalId;
+        let captureInterval;
+        let frames = [];
+        
     
         function initializeWebcam() {
             navigator.mediaDevices.getUserMedia({ video: true })
@@ -29,11 +32,7 @@
 
         }
     
-        function captureAndSendToFlask(type) {
-            const numFrames = 30;
-            const frames = [];
-    
-            function captureFrame() {
+        function captureFrame(type) {
                 const video = document.getElementById('webcam');
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -42,11 +41,10 @@
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const imageData = canvas.toDataURL('image/jpeg');
                 frames.push(imageData);
-            }
-    
-            for (let i = 0; i < numFrames; i++) {
-                captureFrame();
-            }
+                frames = frames.slice(-30);
+        }
+
+        function captureAndSendToFlask(type) {           
     
             if(type === 'dig'){
                 fetch('/predictdig', {
@@ -102,9 +100,17 @@
                     if (intervalId) {
                         clearInterval(intervalId);
                     }
+                    if(captureInterval){
+                        clearInterval(captureInterval);
+                    }
+
+                    captureInterval = setInterval(() => {
+                        captureFrame();
+                    });
+                    
                     intervalId = setInterval(() => {
                         captureAndSendToFlask('dig');
-                    }, 1000);
+                    }, 2000);   
                 }
             }, 1000); 
 
@@ -118,7 +124,7 @@
             document.getElementById('result').innerText = ' ';
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
-            
+
             const video = document.getElementById('webcam');
             document.getElementById('result').innerText = 'Start';
 
@@ -135,16 +141,30 @@
                     video.play();
                     if (intervalId) {
                         clearInterval(intervalId);
-                    }
+                    }                 
+                
+
                     intervalId = setInterval(() => {
+
+                        document.getElementById('result').innerText = 'Try showing the sign!!!';
+                        for(i=0;i<30;i++)
+                        {
+                            captureFrame();
+                        }
+                        document.getElementById('result').innerText = 'Predicting---';
                         captureAndSendToFlask('alpha');
-                    }, 1000);
+
+
+                    } , 1000);  
+
                 }
             }, 1000); 
         });
     
         document.getElementById('stop').addEventListener('click', () => {
+            clearInterval(captureInterval);
             clearInterval(intervalId);
+
             if (videoStream) {
                 const videoTracks = videoStream.getVideoTracks();
                 videoTracks[0].stop();
