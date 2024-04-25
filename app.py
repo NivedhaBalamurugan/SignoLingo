@@ -144,13 +144,12 @@ def predictalpha():
                 handtype=hand_handedness.classification[0].label
                 if(handtype  == 'Left'):
                     lt=lt+1
-                    break
-            if (lt == 1):
-                break
-            sequence.append(keypoints)  
+                else:
+                    rt=rt+1 
+            sequence.append(keypoints)
 
         
-        if(lt == 1):
+        if(rt == 30):
             sequence.clear()
             for frame_data in frames:
             
