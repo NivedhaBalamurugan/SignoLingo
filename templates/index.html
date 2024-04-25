@@ -41,7 +41,6 @@
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const imageData = canvas.toDataURL('image/jpeg');
                 frames.push(imageData);
-                frames = frames.slice(-30);
         }
 
         function captureAndSendToFlask(type) {           
