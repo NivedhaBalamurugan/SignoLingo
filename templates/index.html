@@ -16,7 +16,6 @@
         let intervalId;
         let captureInterval;
         let frames = [];
-        
     
         function initializeWebcam() {
             navigator.mediaDevices.getUserMedia({ video: true })
@@ -29,7 +28,6 @@
                 document.getElementById('captureButton').style.display = 'none';
                 document.getElementById('captureButtondig').style.display = 'none';
             });
-
         }
     
         function captureFrame(type) {
@@ -41,6 +39,7 @@
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const imageData = canvas.toDataURL('image/jpeg');
                 frames.push(imageData);
+                frames = frames.slice(-30);
         }
 
         function captureAndSendToFlask(type) {           
@@ -81,14 +80,10 @@
             document.getElementById('captureButtonalpha').style.display = 'none'
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
-
             const video = document.getElementById('webcam');
             document.getElementById('result').innerText = 'Start';
-
             video.pause();
-
             let count = 5; 
-
             const countdownInterval = setInterval(() => {
                 if (count > 0) {
                     document.getElementById('result').innerText = count.toString();
@@ -112,9 +107,7 @@
                     }, 2000);   
                 }
             }, 1000); 
-
         });
-
     
         document.getElementById('captureButtonalpha').addEventListener('click', () => {
             document.getElementById('stop').style.display = 'inline';
@@ -123,14 +116,10 @@
             document.getElementById('result').innerText = ' ';
             document.getElementById('result').style.display = 'inline';
             initializeWebcam();
-
             const video = document.getElementById('webcam');
             document.getElementById('result').innerText = 'Start';
-
             video.pause();
-
             let count = 5; 
-
             const countdownInterval = setInterval(() => {
                 if (count > 0) {
                     document.getElementById('result').innerText = count.toString();
@@ -140,30 +129,24 @@
                     video.play();
                     if (intervalId) {
                         clearInterval(intervalId);
-                    }                 
-                
+                    }
+                    if(captureInterval){
+                        clearInterval(captureInterval);
+                    }
 
+                    captureInterval = setInterval(() => {
+                        captureFrame();
+                    });
+                    
                     intervalId = setInterval(() => {
-
-                        document.getElementById('result').innerText = 'Try showing the sign!!!';
-                        for(i=0;i<30;i++)
-                        {
-                            captureFrame();
-                        }
-                        document.getElementById('result').innerText = 'Predicting---';
                         captureAndSendToFlask('alpha');
-
-
-                    } , 1000);  
-
+                    }, 2000);   
                 }
             }, 1000); 
         });
     
         document.getElementById('stop').addEventListener('click', () => {
-            clearInterval(captureInterval);
             clearInterval(intervalId);
-
             if (videoStream) {
                 const videoTracks = videoStream.getVideoTracks();
                 videoTracks[0].stop();
@@ -178,8 +161,3 @@
     
 </body>
 </html>
-
-
-
-
-
