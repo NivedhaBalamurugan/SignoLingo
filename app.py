@@ -1,6 +1,7 @@
 import base64
 import numpy as np
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import mediapipe as mp
 import cv2
 from keras.models import load_model
@@ -51,6 +52,7 @@ def extract_key_points(results):
 
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000","https://signolingo.vercel.app"]}})
 
 try:
     model_dig = load_model('best_model_dig_with10.h5')
