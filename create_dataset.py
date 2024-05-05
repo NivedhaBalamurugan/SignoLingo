@@ -55,21 +55,26 @@ def extract_key_points(results):
 
 DATA_PATH = os.path.join('Dataset')     
 no_sequences=20
-sequence_length=30
+sequence_length=60
 
-action = 'Z'
+action = 'J'
 
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
 
     for sequence in range(no_sequences):
+        k=0
         for frame_num in range(sequence_length):
 
             success, frame = cap.read()
             if not success:
               print("Ignoring empty camera frame...")
               continue
-
+            if(k==0):
+                k=1
+            elif(k==1):
+                k=0
+                continue
             image,results = mp_detection(frame)
 
             if results.multi_hand_landmarks:
@@ -90,9 +95,9 @@ with mp_hands.Hands(max_num_hands=1, model_complexity=0, min_detection_confidenc
                     cv2.imshow('OpenCV Feed', cv2.flip(image,1))
             
 
-            keypoints = extract_key_points(results)
-            npy_path = os.path.join(DATA_PATH, action , str(sequence), str(frame_num))
-            np.save(npy_path, keypoints)
+         #   keypoints = extract_key_points(results)
+          #  npy_path = os.path.join(DATA_PATH, action , str(sequence), str(frame_num))
+           # np.save(npy_path, keypoints)
 
                 
             if cv2.waitKey(10) & 0xFF == ord('q'):
